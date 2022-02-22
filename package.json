@@ -1,6 +1,6 @@
 {
   "name": "login-2y2c-example",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Là code mẫu để login vào server 2y2c.org",
   "main": "index.js",
   "scripts": {

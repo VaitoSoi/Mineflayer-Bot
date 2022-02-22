@@ -15,7 +15,25 @@
  */
 
 const mineflayer = require('mineflayer') // Khai báo mineflayer
-const info = require('./config.json')   // Khai báo thông tin, có thể dùng file .env để thay thế
+const info = require('./config.json')   // Khai báo thông tin, vui lòng chỉnh sửa như bên dưới
+
+/**
+ * Vào file 'config.json'.
+ * Chỉnh sửa các mục như dưới:
+ *  +  username (là tên của của tài khoản Minecraft của bot)
+ *  +  pass (là mật khẩu để đăng nhập vào tài khoản của bot khi tham gia vào sever 2y2c.org)
+ * Có thể chỉnh (muốn chỉnh hay không thì bạn): 
+ *  +  ip (IP của sever, mặc định là 2y2c.org)
+ *  +  version (phiên bản của Minecraft khi tham gia vào server)
+ *  +  port (là cổng để tham gia vào server, mặc định là 25565)
+ * 
+ * !!Lưu ý:
+ *  **  username không được có dấu cách (vd: OggyTheBot)
+ *  **  pass phải viết tách từng con số ra (vd: 1 2 3 4)
+ *  -  ip server phải là 1 ip hợp lệ/có tồn tại (vd: 2y2c.org)
+ *  -  version phải là 1 phiên bản hợp lệ/có tồn tại (vd: 1.17.1)
+ *  -  port phải là 1 cổng hợp lệ (vd: 25565)
+ */
 
 /**
  * 
@@ -24,18 +42,27 @@ const info = require('./config.json')   // Khai báo thông tin, có thể dùng
  */
 
 function run() {
-    
+
     // Khai báo bot
-    const bot = mineflayer.createBot({ 
+    const bot = mineflayer.createBot({
         // Tên của Bot
-        username: info.username, 
+        username: info.username,
 
         // Version của game
-        version: info.version,  
+        version: info.version,
 
         // IP của server
-        host: info.ip          
+        host: info.ip,
+
+        // Port của server
+        port: Number(info.port),
+
+        // Plugin AFK
+        plugins: {
+            afk: require('./afk')
+        }
     })
+    let enter = false
 
     // Khi có 1 cửa sổ (bàn chế tạo, rương, lò nung,v.v...) mở
     bot.on('windowOpen', async (window) => {
@@ -44,19 +71,19 @@ function run() {
         if (Number(window.slots.length) == 63) {
 
             // Thông báo ra console
-            console.log('\n[CONSOLE]» 🟢 | Cửa sổ CHUYỂN-SERVER mở. \n')
+            console.log('[CONSOLE]» 🟢 | Cửa sổ CHUYỂN-SERVER mở. ')
 
             // Nhấn vào ô để chuyển server
             bot.simpleClick.leftMouse(10);
 
             // Thông báo ra console
-            console.log('\n[CONSOLE]» 🟢 | Đã click vào ô CHUYỂN-SERVER. \n')
+            console.log('[CONSOLE]» 🟢 | Đã click vào ô CHUYỂN-SERVER.')
 
             // Nếu cửa sổ đó là bàn chế tạo (thường cộng với Inventory và Hotbar là 46) 
         } else if (Number(window.slots.length) == 46) {
 
             // Thông báo ra console
-            console.log('\n[CONSOLE]» 🟢 | Cửa sổ NHẬP-PIN mở. \n')
+            console.log('[CONSOLE]» 🟢 | Cửa sổ NHẬP-PIN mở. ')
 
             // Khai báo PASSWORD
             const pass = info.pass.split(' ')
@@ -80,11 +107,20 @@ function run() {
 
             // Thông báo ra console
             console.log('[CONSOLE]» 🟢 | Đã nhập pin!')
+
+            // Thay đổi giá trị biến
+            enter = true
         }
     });
 
     // Thông báo ra console khi có tin nhắn
-    bot.on('messagestr', (msg) => console.log('[LIVECHAT]» ' + msg))
+    bot.on('messagestr', (msg) => {
+        console.log('[LIVECHAT]» ' + msg)
+        if (enter = true && msg === ' dùng lệnh/2y2c  để vào server.') {
+            bot.chat('/2y2c')
+            console.log('[CONSOLE]» 🟢 | Đã nhập /2y2c')
+        } else if (msg === 'The main server is down. We will be back soon!') bot.end('Sever restart')
+    })
 
     // Khi bot ngắt kết nối đến server
     bot.on('end', (reason) => {
@@ -109,7 +145,14 @@ function run() {
         // Phân loại các cụm (Pin, Queue, Main)
         if (switches == 1) sevrer = 'PIN'
         else if (switches == 2) server = 'QUEUE'
-        else if (switches == 3) { server = 'MAIN'; switches = 0 }
+        else if (switches == 3) {
+            server = 'MAIN';
+            switches = 0;
+            setTimeout(() => {
+                bot.afk.start()
+                console.log('[CONSOLE]» 🟢 | Bot bắt đầu afk')
+            }, 5 * 1000)
+        }
 
         // Thông báo ra console
         console.log('[CONSOLE]» 🟢 | Đã kết nối đến server: ' + info.ip)
