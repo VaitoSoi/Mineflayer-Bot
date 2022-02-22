@@ -1,7 +1,7 @@
 /**
  * 
- *                   Login-2y2c-Example
- * Vui lòng ghi credit (bao gồm: 'MoonU#0001' và 'VaitoSoi#2220')
+ *                          Login-2y2c-Example
+ * Vui lòng ghi Credit (bao gồm: 'MoonU#0001' và 'VaitoSoi#2220') nếu có sử dụng
  * 
  * Đây là 1 bản làm lại dựa trên '2Y2C-Login-API' của MoonU#0001
  * Link dẫn vào bản gốc: https://github.com/MoonVN571/2Y2C-Login-API
