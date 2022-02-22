@@ -1,0 +1,25 @@
+{
+  "name": "login-2y2c-example",
+  "version": "1.0.0",
+  "description": "Là code mẫu để login vào server 2y2c.org",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VaitoSoi/Login-2y2c-Example.git"
+  },
+  "keywords": [
+    "mineflayer"
+  ],
+  "author": "VaitoSoi#2220",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VaitoSoi/Login-2y2c-Example/issues"
+  },
+  "homepage": "https://github.com/VaitoSoi/Login-2y2c-Example#readme",
+  "dependencies": {
+    "mineflayer": "^4.0.0"
+  }
+}
