@@ -1,6 +1,6 @@
 # Mineflayer basic bot
 ##### Dễ hiểu thì code này dùng để cho bot Mineflayer chạy trong các server minecraft.
-##### !! Lưu ý: Chỉ nên chạy bot này trong server 2y2c!
+##### !! Lưu ý: Chỉ nên chạy bot này trong server anarchyvn.net!
 
 * **Lưu ý: Có sử dụng code [2Y2C-Login-API](https://github.com/MoonVN571/2Y2C-Login-API).**
 * **Chỉ mang tính chất tham khảo.**
