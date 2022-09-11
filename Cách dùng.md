@@ -6,7 +6,7 @@
 * Tải [VSCode (Visual Studio Code)](https://code.visualstudio.com/) cho việc chỉnh sửa (không cần thiết)
 * Tải [Repository này](https://github.com/VaitoSoi/Mineflayer-Bot) (để có chương trình mà chạy)
 
-#### Bước 1: Sửa dụng
+#### Bước 1: Sử dụng
 
 ###### Nếu bạn dùng máy tính chạy hệ điều hành Window:
 
