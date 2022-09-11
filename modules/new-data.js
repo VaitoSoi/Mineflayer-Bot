@@ -1,5 +1,5 @@
 const prompt = require('prompt')
-const file = require('edit-json-file')('./config.json')
+const fs = require('fs-extra')
 
 async function run() {
     console.log('[Console] Đang tạo dữ liệu mới')
@@ -55,7 +55,7 @@ async function run() {
             spam_chat: {
                 description: 'Các chat để cho bot spam',
                 type: 'string',
-                pattern: /^\w+$/,
+                pattern: /\w+/,
                 message: 'Chat phải chứa ít nhất 1 chữ',
                 default: 'Create by VaitoSoi#2220'
             }
@@ -63,15 +63,21 @@ async function run() {
     }).then(async (res) => {
         const ascii = require('ascii-table')
         const table = new ascii('Config')
+        const file = require('edit-json-file')('./configs/default.json')
         Object.keys(res).forEach(key => {
-            file.set(key, res[key])
+            let value = key != 'spam_chat' ? `${res[key]}` : [`${res[key]}`]
+            file.set(key, value)
             table.addRow(key, res[key])
         })
         file.save()
+        if (!fs.readdirSync('./').includes('configs')) fs.mkdirSync('./configs')
+        fs.copyFileSync('./configs/default.json', './config.json')
+        require('edit-json-file')('./config.json', { autosave: true }).set('name', 'default')
         console.log('[Console] Đã tạo file data mới')
         console.log('[Console] ' + table.toString().split('\n').join('\n[Console] '))
-        require('../run')()
+        require('../index')
     })
 }
 
-module.exports = run()
+//run()
+module.exports = run

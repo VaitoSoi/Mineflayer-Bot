@@ -1,8 +1,13 @@
 {
+  "owner": "players",
   "username": "players",
   "pin": "1 1 1 1",
   "ip": "anarchyvn.net",
   "port": "25565",
   "version": "1.12.2",
-  "prefix": "!"
+  "prefix": "!",
+  "spam_chat": [
+    "Create by VaitoSoi#2220"
+  ],
+  "name": "default"
 }

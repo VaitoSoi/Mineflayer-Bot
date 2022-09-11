@@ -12,7 +12,7 @@ module.exports = (array) => {
         array.push({
             name: command.name,
             description: command.description ? command.description : 'Không có mô tả',
-            usage: command.usage ? command.description : '',
+            usage: command.usage ? command.usage : '',
             aliases: command.aliases && Array.isArray(command.aliases) ? command.aliases : [],
             run: command.run
         })

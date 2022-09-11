@@ -1,3 +1,3 @@
 echo off
 cls
-node index.js
+node index

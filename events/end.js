@@ -19,7 +19,7 @@ module.exports = {
 
         if (bot.anti_bot == false) bot.reconnect = setTimeout(() => {
             console.log(color.yellow, '[Console] Đang kết nối lại với server: ' + bot.config.ip)
-            require('../index')
+            require('../run')()
         }, ms(time))
     }
 }
