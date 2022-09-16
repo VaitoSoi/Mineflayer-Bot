@@ -1,5 +1,5 @@
 node_modules/
-package-lock.json
+package-*.json
 configs/
-update_v*.zip
+update*.zip
 VaitoSoi-*/

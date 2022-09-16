@@ -1,14 +1,16 @@
-const child_process = require('node:child_process')
-const color = require('./color')
-const readline = require('readline')
-
-let run = () => {
-    console.log(color.code.yellow, '[Console] Đang tải các gói tài nguyên...');
+function run() {
+    console.log('[Installer] Đang tải các gói tài nguyên...');
+    const child_process = require('node:child_process')
     const fs = require('fs')
+    const readline = require('readline')
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    })
     const exist = fs.existsSync('./package.json')
     const packages = exist == true
         ? require('../package.json').dependencies
-        : (fs.readFileSync('./modules/package.txt') + '').split('\n')
+        : (fs.readFileSync('./package.txt') + '').split('\n')
     let dependencies = exist == true
         ? Object.keys(packages).map(str => `${str}${packages[str]}`)
         : packages
@@ -16,9 +18,7 @@ let run = () => {
     let install = (package) => {
         child_process.exec(`npm install ${package}`, async (err) => {
             if (err) {
-                readline.clearLine(process.stdout)
-                readline.cursorTo(process.stdout, 0)
-                console.error(color.code.red, `[Console] ${err}`);
+                clear_n_log(`[Installer] ${err}`, 1);
                 i++
                 log();
             } else { i++; log() }
@@ -28,19 +28,20 @@ let run = () => {
         if (i < dependencies.length) {
             let name = dependencies[i].slice(0, dependencies[i].split('').indexOf('^'))
             let version = dependencies[i].slice(dependencies[i].split('').indexOf('^') + 1)
-            readline.clearLine(process.stdout)
-            readline.cursorTo(process.stdout, 0)
-            process.stdout.write(`${color.code.blue, `[Console] [${Math.floor(i / (dependencies.length) * 100)}%]`} Đang tải gói '${name}' (ver ${version})...`);
+            await readline.clearLine(process.stdout, 0)
+            readline.cursorTo(process.stdout, 0, rl.rows)
+            process.stdout.write(`${`[Installer] [${Math.floor(i / (dependencies.length) * 100)}%]`} Đang tải gói '${name}' (ver ${version})...`);
             install(`${name}@${version}`)
         } else {
             readline.clearLine(process.stdout)
             readline.cursorTo(process.stdout, 0)
-            console.log(color.code.green, '[Console] [100%] Đã tải toàn bộ gói tài nguyên')
-            require('./update').confirm(true)
+            console.log('[Installer] [100%] Đã tải toàn bộ gói tài nguyên')
+            const file = require('edit-json-file')('./package.json', { autosave: true })
+            file.set('version', 'pre-install')
+            require('./bot_install')
         }
     }
     log()
 }
 
-//run()
-module.exports = run
+run()

@@ -12,22 +12,17 @@ const fs = require('fs')
 
 async function run() {
     const dir = fs.readdirSync('./')
-    if (!dir.includes('node_modules')) {
-        console.log('[Console] Có vẻ đây là lần đầu bạn dùng Mineflayer-Bot')
-        require('./modules/install')()
-    } else {
-        const update = require('./modules/update')
-        if (await update.check() == false) return update.confirm(false)
-        else {
-            console.log('----- Chào mừng bạn đã đến với bản điều khiển của Mineflayer-Bot ----')
-            console.log('Bạn có thể gõ:\n' +
-                `> help: để biết danh sách lệnh\n` +
-                `> help <tên-lệnh>: để biết thông tin chi tiết về một lệnh\n` +
-                `> run: để chạy bot\n` +
-                `> config guide: để biết làm thế nào để tạo config\n`)
-            process.stdout.write('command: ')
-            require('./cmd')()
-        }
+    const update = require('./modules/update')
+    if (await update.check() == false) return update.confirm(false)
+    else {
+        console.log('----- Chào mừng bạn đã đến với bản điều khiển của Mineflayer-Bot ----')
+        console.log('Bạn có thể gõ:\n' +
+            `> help: để biết danh sách lệnh\n` +
+            `> help <tên-lệnh>: để biết thông tin chi tiết về một lệnh\n` +
+            `> run: để chạy bot\n` +
+            `> config guide: để biết làm thế nào để tạo config\n`)
+        process.stdout.write('command: ')
+        require('./cmd')()
     }
 }
 
