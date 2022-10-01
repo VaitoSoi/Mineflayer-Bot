@@ -5,7 +5,7 @@ let readline = require('readline').createInterface({
     output: process.stdout
 })
 function run() {
-    readline.on('line', async (input) => {
+    readline.once('line', async (input) => {
         if (!input) return
         let args = input.split(' ')
         const cmd = cmds.find(cmd => cmd.name == args[0].toLowerCase())
@@ -22,13 +22,22 @@ function run() {
             )
             console.log('')
         }
-        if (cmd.name == 'run') readline.close()
-        else process.stdout.write('command: ')
+        if (cmd.name != 'run') {
+            process.stdout.write('command: ')
+            run()
+        }
     })
 }
 
 function start() {
     require('./handler/cli_handler')(cmds)
+    console.log('----- Chào mừng bạn đã đến với bản điều khiển của Mineflayer-Bot ----')
+    console.log('Bạn có thể gõ:\n' +
+        `> help: để biết danh sách lệnh\n` +
+        `> help <tên-lệnh>: để biết thông tin chi tiết về một lệnh\n` +
+        `> run: để chạy bot\n` +
+        `> config help create: để biết làm thế nào để tạo config\n`)
+    process.stdout.write('command: ')
     run()
 }
 //start()
