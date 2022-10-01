@@ -4,9 +4,13 @@ let global_y = 0
 
 async function check() {
     const axios = require('axios').default
-    const res = await axios.get('https://api.github.com/repos/vaitosoi/mineflayer-bot/releases/latest')
+    const res = await axios.get('https://api.github.com/repos/vaitosoi/mineflayer-bot/releases/latest').catch(e => { })
     const old_version = require('../package.json').version
-    return { check: res.data.tag_name == old_version, version: String(res.data.tag_name), data: res.data }
+    const callback =
+        res != undefined
+            ? { check: res.data.tag_name == old_version, version: String(res.data.tag_name), data: res.data }
+            : { check: true, version: '1.0.0', data: { body: 'Error' } }
+    return callback
 }
 
 async function confirm() {
@@ -14,6 +18,8 @@ async function confirm() {
     const update = await check()
     const res = update.data
     prompt.start()
+    process.stdout.clearLine(0)
+    process.stdout.cursorTo(0, 15)
     console.log('[Auto-Update] Phát hiện bản cập nhật mới.')
     console.log(`[Auto-Update] Nội dung bản cập nhật:\n${res.body}`)
     console.log(`[Auto-Update] Bạn có muốn cập nhật lên bản ${res.tag_name} không ?`)
@@ -27,12 +33,16 @@ async function confirm() {
                 default: 'y'
             }
         }
-    }).then((prompt_res) => {
+    }).then(async (prompt_res) => {
         if (prompt_res.confirm.toLowerCase() == 'n') {
-            process.stdout.write('[Auto-Update] Đã dừng cập nhật')
-            setTimeout(() => {
-                require('../cmd')()
-            }, 5000);
+            console.log('[Auto-Update] Đã dừng cập nhật')
+            await require('node:timers/promises').setTimeout(1000)
+            for (let i = 14; i < 14 + 4 + (await check()).data.body.split('\n').length; i++) {
+                process.stdout.cursorTo(0, i)
+                process.stdout.clearLine(0)
+            }
+            process.stdout.moveCursor(0, 1)
+            require('../cmd')()
         } else {
             console.clear()
             console.log('[Auto-Update] Bắt đầu việc cập nhật')

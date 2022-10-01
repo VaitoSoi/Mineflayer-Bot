@@ -57,5 +57,7 @@ if (dir.includes('installer.js') ||
         'window_install.bat',
         'other_install.sh',
         'package.txt'
-    ].forEach(file => fs.rmSync(`./${file}`))
+    ].forEach(file => fs.readdirSync('./').includes(file)
+        ? fs.rmSync(`./${file}`)
+        : undefined)
 run()
