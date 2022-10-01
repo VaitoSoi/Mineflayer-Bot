@@ -17,7 +17,7 @@ async function check() {
     const old_version = require('../package.json').version
     const callback =
         res != undefined
-            ? { check: res.data.tag_name == old_version, version: String(res.data.tag_name), data: res.data }
+            ? { check: Boolean(res.data.tag_name == old_version), version: String(res.data.tag_name), data: res.data }
             : { check: true, version: '1.0.0', data: { body: 'Error' } }
     return callback
 }

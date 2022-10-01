@@ -39,7 +39,7 @@ async function run() {
         )
     )
     const confirm = require('./setting.json')['auto-update']
-    //console.log(check == false && connection == true && confirm == true)
+    console.log(check == false && connection == true && confirm == true)
     if (check == false && connection == true && confirm == true) return update.confirm()
     else {
         process.stdout.clearLine(0)
