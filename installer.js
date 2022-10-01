@@ -10,8 +10,7 @@ const install_package = (package) => new Promise((resolve, reject) =>
 const check = async () => {
     const axios = require('axios').default
     const res = await axios.get('https://api.github.com/repos/vaitosoi/mineflayer-bot/releases/latest')
-    const old_version = require('./package.json').version
-    return { check: res.data.tag_name == old_version, version: String(res.data.tag_name), full: res.data }
+    return { version: String(res.data.tag_name), full: res.data }
 }
 
 async function run() {
@@ -51,6 +50,7 @@ async function run() {
     process.stdout.clearLine(0)
     console.log('[Installer] Đã tải toàn bộ các gói tài nguyên')
     global_y++
+    require('fs-extra').removeSync('./package.json')
     const update = await check()
     return download(update.version)
 }
@@ -90,12 +90,13 @@ async function unzip() {
         process.stdout.cursorTo(0, global_y)
         process.stdout.clearLine(0)
         const file = fs.readdirSync('./').filter((file) => /^VaitoSoi-Mineflayer-Bot-(.+)$/.test(file))
-        await fs.copy(`./${file[0]}`, './', { overwrite: true })
-        fs.removeSync(`./${file[0]}`)
-        fs.removeSync('./update.zip')
-        console.log('[Installer] Đã giải nén file')
-        global_y++
-        return install()
+        fs.copy(`./${file[0]}`, './', { overwrite: true }).then(() => {
+            fs.removeSync(`./${file[0]}`)
+            fs.removeSync('./update.zip')
+            console.log('[Installer] Đã giải nén file')
+            global_y++
+            return install()
+        })
     })
 }
 
