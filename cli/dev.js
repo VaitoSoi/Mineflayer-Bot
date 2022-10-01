@@ -7,6 +7,7 @@ module.exports = {
      * @param {Object} cmds 
      */
     run: async (args, cmds) => {
+        if (require('../setting.json').dev == false) return
         if (args[1] == 'err')
             throw new Error(args[2] ? args.slice(2).join(' ') : 'Testing...')
         else if (args[1] == 'reload') {

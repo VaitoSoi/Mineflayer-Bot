@@ -3,3 +3,4 @@ package-*.json
 configs/
 update*.zip
 VaitoSoi-*/
+setting.json

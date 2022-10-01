@@ -4,7 +4,16 @@ let global_y = 0
 
 async function check() {
     const axios = require('axios').default
-    const res = await axios.get('https://api.github.com/repos/vaitosoi/mineflayer-bot/releases/latest').catch(e => { })
+    const setting = require('../setting.json')
+    const config = setting.dev == true && setting.auth != '' ? {
+        headers: {
+            'Accept': 'application/vnd.github+json',
+            'Authorization': `Bearer ${setting.auth}`
+        }
+    } : {}
+    const res = await axios
+        .get('https://api.github.com/repos/vaitosoi/mineflayer-bot/releases/latest', config)
+        .catch(e => { })
     const old_version = require('../package.json').version
     const callback =
         res != undefined
@@ -20,9 +29,9 @@ async function confirm() {
     prompt.start()
     process.stdout.clearLine(0)
     process.stdout.cursorTo(0, 15)
-    console.log('[Auto-Update] Phát hiện bản cập nhật mới.')
-    console.log(`[Auto-Update] Nội dung bản cập nhật:\n${res.body}`)
-    console.log(`[Auto-Update] Bạn có muốn cập nhật lên bản ${res.tag_name} không ?`)
+    console.log('[Update] Phát hiện bản cập nhật mới.')
+    console.log(`[Update] Nội dung bản cập nhật:\n${res.body}`)
+    console.log(`[Update] Bạn có muốn cập nhật lên bản ${res.tag_name} không ?`)
     prompt.get({
         properties: {
             confirm: {
@@ -35,17 +44,18 @@ async function confirm() {
         }
     }).then(async (prompt_res) => {
         if (prompt_res.confirm.toLowerCase() == 'n') {
-            console.log('[Auto-Update] Đã dừng cập nhật')
+            console.log('[Update] Đã dừng cập nhật')
             await require('node:timers/promises').setTimeout(1000)
-            for (let i = 14; i < 14 + 4 + (await check()).data.body.split('\n').length; i++) {
+            const line = (await check()).data.body.split('\n').length
+            for (let i = 14; i < 14 + 6 + line; i++) {
                 process.stdout.cursorTo(0, i)
                 process.stdout.clearLine(0)
             }
-            process.stdout.moveCursor(0, 1)
+            process.stdout.cursorTo(0, 14)
             require('../cmd')()
         } else {
             console.clear()
-            console.log('[Auto-Update] Bắt đầu việc cập nhật')
+            console.log('[Update] Bắt đầu việc cập nhật')
             global_y++
             return delete_file(update.version)
         }
@@ -65,15 +75,15 @@ async function delete_file(str) {
  */
 async function download(version) {
     const superagent = require('superagent')
-    process.stdout.write(`${color.yellow, `[Auto-Update] Đang tải bản cập nhật mới (${version})...`}`)
+    process.stdout.write(`${color.yellow, `[Update] Đang tải bản cập nhật mới (${version})...`}`)
     superagent.get(`https://api.github.com/repos/VaitoSoi/Mineflayer-Bot/zipball/${version}`)
         .set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36')
         .end((err, res) => {
-            if (err) return console.error(`${color.red, `[Auto-Update] Lỗi ${err}`}`)
+            if (err) return console.error(`${color.red, `[Update] Lỗi ${err}`}`)
             fs.writeFileSync(`./update.zip`, res.body)
             process.stdout.cursorTo(0, global_y)
             process.stdout.clearLine(0)
-            console.log(`${color.green, `[Auto-Update] Đã tải xong bản cập nhật mới`}`)
+            console.log(`${color.green, `[Update] Đã tải xong bản cập nhật mới`}`)
             global_y++
             return unzip()
         })
@@ -82,7 +92,7 @@ async function download(version) {
 async function unzip() {
     const unzipper = require('unzipper')
     const fs = require('fs-extra')
-    process.stdout.write('[Auto-Update] Đang giải nén file...')
+    process.stdout.write('[Update] Đang giải nén file...')
     await (async () =>
         new Promise((resolve) =>
             void fs.createReadStream('./update.zip')
@@ -96,7 +106,7 @@ async function unzip() {
         await fs.copy(`./${file[0]}`, './', { overwrite: true })
         fs.removeSync(`./${file[0]}`)
         fs.removeSync('./update.zip')
-        console.log('[Auto-Update] Đã giải nén file')
+        console.log('[Update] Đã giải nén file')
         global_y++
         return install()
     })
@@ -110,7 +120,7 @@ const install_package = (package) => new Promise((resolve, reject) =>
 async function install() {
     //console.clear()
     process.stdout.cursorTo(0, global_y)
-    console.log('[Auto-Update] Đang tải các gói tài nguyên...');
+    console.log('[Update] Đang tải các gói tài nguyên...');
     global_y++
     const dependencies = require('../package.json').dependencies
     const packages = Object.keys(dependencies)
@@ -142,10 +152,10 @@ async function install() {
     }
     process.stdout.cursorTo(0, global_y)
     process.stdout.clearLine(0)
-    console.log('[Auto-Update] Đã tải toàn bộ các gói tài nguyên')
+    console.log('[Update] Đã tải toàn bộ các gói tài nguyên')
     global_y++
-    console.log('[Auto-Update] Đã tải toàn bộ bot.')
-    console.log('[Auto-Update] Vui lòng khởi động lại bot sau 5s.')
+    console.log('[Update] Đã tải toàn bộ bot.')
+    console.log('[Update] Vui lòng khởi động lại bot sau 5s.')
     setTimeout(() => process.exit(0), 5000)
 }
 

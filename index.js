@@ -38,7 +38,9 @@ async function run() {
             err ? resolve(false) : resolve(true)
         )
     )
-    if (check == false && connection == true) return update.confirm()
+    const confirm = require('./setting.json')['auto-update']
+    //console.log(check == false && connection == true && confirm == true)
+    if (check == false && connection == true && confirm == true) return update.confirm()
     else {
         process.stdout.clearLine(0)
         process.stdout.cursorTo(0)
@@ -60,4 +62,5 @@ if (dir.includes('installer.js') ||
     ].forEach(file => fs.readdirSync('./').includes(file)
         ? fs.rmSync(`./${file}`)
         : undefined)
+if (!dir.includes('setting.json')) fs.writeFileSync('./setting.json', '{ "auto-update": true }')
 run()
