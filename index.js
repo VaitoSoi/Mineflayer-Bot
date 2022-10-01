@@ -46,4 +46,16 @@ async function run() {
     }
 }
 
+const fs = require('fs-extra')
+const dir = fs.readdirSync('./')
+if (dir.includes('installer.js') ||
+    dir.includes('window_install.bat') ||
+    dir.includes('other_install.sh') ||
+    dir.includes('package.txt'))
+    [
+        'installer.js',
+        'window_install.bat',
+        'other_install.sh',
+        'package.txt'
+    ].forEach(file => fs.rmSync(`./${file}`))
 run()
