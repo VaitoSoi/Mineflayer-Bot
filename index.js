@@ -63,4 +63,5 @@ if (dir.includes('installer.js') ||
         ? fs.rmSync(`./${file}`)
         : undefined)
 if (!dir.includes('setting.json')) fs.writeFileSync('./setting.json', '{ "auto-update": true }')
+if (!dir.includes('config.json')) return require('./modules/new-data')()
 run()
