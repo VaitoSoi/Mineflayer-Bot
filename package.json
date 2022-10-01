@@ -1,6 +1,6 @@
 {
   "name": "mineflayer-bot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Là code mẫu để login vào server anarchyvn.vn",
   "main": "index.js",
   "scripts": {
